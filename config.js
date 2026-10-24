@@ -5,7 +5,7 @@
  */
 const CONFIG = Object.freeze({
   APP_NAME: 'おとつなぎ',
-  VERSION: 'v1.0.0',
+  VERSION: 'v1.1.0',
 
   // GASウェブアプリのURL（デプロイ後に発行される /exec で終わるURL）
   GAS_URL: 'https://script.google.com/macros/s/AKfycbwfBfHSXA-TaYAoGwf7gQdCj3dfpoxLXdx2_HzvrrGuRjiMOHF5TbQ5InhpqLrthq8G/exec',

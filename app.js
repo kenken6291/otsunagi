@@ -7,7 +7,7 @@
 /* ========== 基本ユーティリティ ========== */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-const KEY = { token: CONFIG.STORAGE_PREFIX + 'token', user: CONFIG.STORAGE_PREFIX + 'user', gas: CONFIG.STORAGE_PREFIX + 'gas_url' };
+const KEY = { token: CONFIG.STORAGE_PREFIX + 'token', user: CONFIG.STORAGE_PREFIX + 'user', gas: CONFIG.STORAGE_PREFIX + 'gas_url', helpSeen: CONFIG.STORAGE_PREFIX + 'help_seen' };
 const COLORS = ['#3e6b4c', '#a87908', '#2f7480', '#9c4f58', '#5c62a0', '#7a6a3a', '#4f7f6a', '#8a5a2b'];
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -170,6 +170,15 @@ function showMain() {
   $('#mainView').classList.remove('hidden');
   $('#userBox').classList.remove('hidden');
   $('#userName').textContent = state.user?.nickname || '';
+  if (!localStorage.getItem(KEY.helpSeen)) {
+    localStorage.setItem(KEY.helpSeen, '1');
+    openHelp();
+  }
+}
+function openHelp() {
+  openModal('#modalHelp');
+  const body = $('#modalHelp .overflow-y-auto');
+  if (body) body.scrollTop = 0;
 }
 function afterLogin() {
   if (state.user?.mustChange) {
@@ -1019,6 +1028,14 @@ function bind() {
     if (e.key !== 'Escape') return;
     $$('.modal').forEach(m => { if (!m.classList.contains('hidden') && !(m.id === 'modalPw' && state.forcedPw)) closeModal('#' + m.id); });
   });
+
+  // 使い方
+  $$('.help-open').forEach(b => b.addEventListener('click', openHelp));
+  $$('#modalHelp nav a').forEach(a => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
 
   // 設定
   $('#settingsBtn').addEventListener('click', openSettings);
